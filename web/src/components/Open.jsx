@@ -2,93 +2,71 @@ import React, { useState, useRef, useEffect } from 'react';
 
 import {debugData} from "../utils/debugData";
 import PossibleReward from './tools/PossibleReward'
-
+import WinningCard from './tools/YourWinnings'
 import selector from '../assets/images/selector.svg'
 
-debugData([
-    {
-      action: 'openCrate',
-      data: true,
+import { selectedData, setConfig } from './Store';
+
+import { LinearGradient } from 'react-text-gradients';
+
+// MUST ADD UP TO 1, make configurable
+const ODDS = {
+    ['legendary']: 0.07,
+    ['epic']: 0.1,
+    ['rare']: 0.13,
+    ['uncommon']: 0.2,
+    ['common']: 0.5,
+};
+
+function shuffleArray(odds, totalBoxes, options) {
+    const boxes = [];
+
+    for (let i = 0; i < totalBoxes; i++) {
+        const randomValue = Math.random();
+        let cumulativeProbability = 0;
+        let selectedTier = 'common';
+
+        for (const tier in odds) {
+            cumulativeProbability += odds[tier];
+            if (randomValue <= cumulativeProbability) {
+                selectedTier = tier;
+                break;
+            }
+        }
+
+        const matchingOptions = options.filter(option => option.tier === selectedTier);
+        const randomIndex = Math.floor(Math.random() * matchingOptions.length);
+        boxes.push(matchingOptions[randomIndex]);
     }
-])
 
-const Options = [
-    {
-        item: 'Mas 1k',
-        image: 'https://i.imgur.com/M7bABmb.png',
-        tier: 'common',
-        amount: '1',
-    },
-    {
-        item: 'Mask 2',
-        image: 'https://i.imgur.com/M7bABmb.png',
-        tier: 'legendary',
-        amount: '1',
-    },
-    {
-        item: 'Mask 3',
-        image: 'https://i.imgur.com/M7bABmb.png',
-        tier: 'rare',
-        amount: '1',
-    },
-    {
-        item: 'Mask 4',
-        image: 'https://i.imgur.com/M7bABmb.png',
-        tier: 'uncommon',
-        amount: '1',
-    },
-    {
-        item: 'Mask 5',
-        image: 'https://i.imgur.com/M7bABmb.png',
-        tier: 'epic',
-        amount: '1',
-    },
-]
-
-function getRandomInt(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+    return boxes;
 }
 
-function shuffleArray(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
-    }
-
-    return array;
-}  
-
 export default function OpenCrate() {
-    // function to make 1000 PossibleRewards from the options
-    const itemRewards = Array.from({ length: 100 }, () => Options).flat();
-    const randomizedItemRewards = shuffleArray(itemRewards);
-
     const [spin, setSpin] = useState(false);
     const [translationValue, setTranslation] = useState(0);
+    const [winningItem, setWinningItem] = useState(null);
+    const [randomizedItemRewards, setRandomizedItemRewards] = useState([]);
+    const winningNumber = 705;
 
-    const handleSpinClick = () => {
-        setSpin(true);
-
-        const middleCard = Math.floor(randomizedItemRewards.length / 2);
-        const cardWidth = 182;
-        const cardGap = 13;
-        const translationValue = -middleCard + (cardWidth + cardGap) + window.length / 2;
-        setTranslation(translationValue)
-
-        setTimeout(() => {
-            setSpin(false);
-            const winningCard = Math.floor(randomizedItemRewards.length / 2);
-            console.log(randomizedItemRewards[winningCard])
-        }, 14000);
-    };
+    const { config } = setConfig();
+    const { selectedBox, openingBox } = selectedData();
 
     useEffect(() => {
-        const cardElement = document.getElementById('card-3');
-        if (cardElement) {
-          // Access the element and do something with it
-          console.log(cardElement);
-        }
-    }, []); // Empty dependency array ensures the effect runs only once after the initial render
+        const itemRewards = Array.from({ length: 1000 }, () => config.Crates[selectedBox].rewards).flat();
+        const shuffledRewards = shuffleArray(ODDS, 1000, itemRewards);
+        setRandomizedItemRewards(shuffledRewards);
+     
+        setSpin(true);
+    
+        const transition = -40090;
+        setTranslation(transition)
+    
+        setTimeout(() => {
+            setSpin(false);
+            setWinningItem(shuffledRewards[winningNumber]);
+        }, 12000);
+    }, [openingBox]);
 
     return (
         <div 
@@ -103,8 +81,37 @@ export default function OpenCrate() {
                 boxSizing: 'border-box',
                 position: 'relative', // Added position relative to the container
                 overflow: 'hidden',
+
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                background: 'rgba(0, 0, 0, 0.3)', // Dark overlay so its easy to see
             }}
         >
+           <LinearGradient style={{
+                fontSize: '64px',
+                fontFamily: 'Skate Sans',
+                // Add the stroke styles here
+                WebkitTextStroke: '0.4px white', // Webkit prefix for better browser compatibility
+                textStroke: '1px white', // Standard property
+                textAlign: 'left',
+
+                position: 'absolute',
+                top: '10%',
+           }} gradient={['to top right', '#C1C1C1 , rgba(255, 255, 255, 0.2)']}>
+                Opening
+            </LinearGradient>
+           <p style={{
+                position: 'absolute',
+                top: '18%',
+                fontSize: '20px',
+                color: 'rgba(234, 234, 234, 0.80)',
+                textAlign: 'center',
+                fontFamily: 'Fira Sans',
+           }}>Wait for the wheel to stop scrolling!</p>
+
             <hr
                 style={{
                     background: 'linear-gradient(90deg, rgba(255, 255, 255, 0.00) 0%, rgba(255, 255, 255, 0.40) 50.07%, rgba(255, 255, 255, 0.00) 100%)',
@@ -116,6 +123,7 @@ export default function OpenCrate() {
                     right: 0,
                 }}
             />
+            
 
             {/* Arrow Section */}
             <img src={selector} style={{
@@ -132,10 +140,25 @@ export default function OpenCrate() {
                 transform: 'translateX(-50%) rotate(180deg)', // Center and rotate the arrow
             }}></img>
 
+            {winningItem !== null && (
+                <div style={{
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '100%',
+                    background: 'rgba(0, 0, 50, 0.7)', // Dark blue overlay with transparency
+                    zIndex: 999, // Ensure the overlay is above other elements
+                    backdropFilter: 'blur(5px)', // Adjust the blur amount as needed
+                }}> 
+                    <WinningCard item={winningItem}></WinningCard>
+                </div>
+            )}
+
             <div
                 className="rewards-container"
                 style={{
-                    display: 'flex',
+                    display: winningItem !== null ? 'none' : 'flex',
                     flexDirection: 'row',
                     flexWrap: 'wrap',
                     justifyContent: 'center',
@@ -146,8 +169,8 @@ export default function OpenCrate() {
                     boxSizing: 'border-box',
                     gap: '13px',
                     overflow: 'hidden',
-                    transform: spin ? `translateX(${translationValue}px)` : '', // Added the translation value
-                    transition: 'transform 10s ease-in-out',
+                    transform: spin ? `translateX(${translationValue}px)` : 'translateX(0px)', // Added the translation value
+                    transition: spin ? 'transform 10s ease-in-out' : 'none',
                 }}
             >
                 {
@@ -155,7 +178,6 @@ export default function OpenCrate() {
                         <PossibleReward
                             key={index}
                             item={option.item}
-                            // item={option.item}
                             image={option.image}
                             tier={option.tier}
                             amount={option.amount}
@@ -177,7 +199,7 @@ export default function OpenCrate() {
                 }}
             />
             
-            <button style={{ position: 'absolute', bottom: 100 }} onClick={handleSpinClick}>Spin</button>
+            {/* <button style={{ position: 'absolute', bottom: 100 }} onClick={handleSpinClick}>Spin</button> */} {/* Spin button (USE THIS FOR DEVELOLPING) */}
         </div>
     );
 }

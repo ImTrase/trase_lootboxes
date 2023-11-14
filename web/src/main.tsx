@@ -11,9 +11,5 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <VisibilityProvider>
       <App />
     </VisibilityProvider>
-
-    <OpenVisibility>
-      <Open />
-    </OpenVisibility>
   </React.StrictMode>,
 );

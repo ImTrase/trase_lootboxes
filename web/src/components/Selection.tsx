@@ -4,8 +4,12 @@ import Card from './tools/Card';
 import RewardCard from './tools/rewardCard';
 import legendary from '../assets/images/legendary.png';
 import sourpatch from '../assets/images/sour_patch_kids.png';
-import { selectedData } from './Store';
+import { selectedData, setConfig } from './Store';
 import {MdKeyboardDoubleArrowRight} from 'react-icons/md';
+
+type config = {
+    Crates: Array<any>;
+}
 
 const BOX_STYLES = {
     position: 'relative',
@@ -63,113 +67,6 @@ const CARDS_CONTAINER = {
     paddingBottom: '10px',
 }
 
-
-const cardData = [
-    { 
-        text: 'Legendary', 
-        image: legendary, 
-        color: 'linear-gradient(158deg, #D24C00 8.96%, #6A2600 85.48%)', 
-        border: '0.7px solid #FFBD80', 
-        hoverColor: '#804719',
-        requirements: [
-            { tier: 'requirement', image: sourpatch, item: 'Sourpatch', amount: '1' },
-        ],
-        rewards: [
-            { tier: 'legendary', image: sourpatch, item: 'Sourpatch', amount: '5' },
-            { tier: 'epic', image: sourpatch, item: 'Sourpatch', amount: '5' },
-            { tier: 'rare', image: sourpatch, item: 'Sourpatch', amount: '5' },
-            { tier: 'common', image: sourpatch, item: 'Sourpatch', amount: '5' },
-            { tier: 'uncommon', image: sourpatch, item: 'Sourpatch', amount: '5' },
-        ],
-    },
-    { 
-        text: 'Epic', 
-        image: legendary, 
-        color: 'linear-gradient(158deg, #A803FD 8.96%, #4101FF 85.48%)',
-        border: '0.7px solid #ED80FF', 
-        hoverColor: '#67009c',
-        requirements: [
-            { tier: 'requirement', image: sourpatch, item: 'Sourpatch', amount: '1' },
-        ],
-        rewards: [
-            { tier: 'legendary', image: sourpatch, item: 'Sourpatch', amount: '5' },
-            { tier: 'epic', image: sourpatch, item: 'Sourpatch', amount: '5' },
-            { tier: 'rare', image: sourpatch, item: 'Sourpatch', amount: '5' },
-            { tier: 'common', image: sourpatch, item: 'Sourpatch', amount: '5' },
-            { tier: 'uncommon', image: sourpatch, item: 'Sourpatch', amount: '5' },
-        ],
-    },
-    { 
-        text: 'Rare', 
-        image: legendary, 
-        color: 'linear-gradient(158deg, #005CEA 8.96%, #002F8B 85.48%)', 
-        border: '0.7px solid #80C2FF', 
-        hoverColor: '#003d9c',
-        requirements: [
-            { tier: 'requirement', image: sourpatch, item: 'Sourpatch', amount: '1' },
-        ],
-        rewards: [
-            { tier: 'legendary', image: sourpatch, item: 'Sourpatch', amount: '5' },
-            { tier: 'epic', image: sourpatch, item: 'Sourpatch', amount: '5' },
-            { tier: 'rare', image: sourpatch, item: 'Sourpatch', amount: '5' },
-            { tier: 'common', image: sourpatch, item: 'Sourpatch', amount: '5' },
-            { tier: 'uncommon', image: sourpatch, item: 'Sourpatch', amount: '5' },
-        ],
-    },
-    { 
-        text: 'Common', 
-        image: legendary, 
-        color: 'linear-gradient(158deg, #11D900 8.96%, #008B16 85.48%)', 
-        border: '0.7px solid #91FF80', 
-        hoverColor: '#004f0d',
-        requirements: [
-            { tier: 'requirement', image: sourpatch, item: 'Sourpatch', amount: '1' },
-        ],
-        rewards: [
-            { tier: 'legendary', image: sourpatch, item: 'Sourpatch', amount: '5' },
-            { tier: 'epic', image: sourpatch, item: 'Sourpatch', amount: '5' },
-            { tier: 'rare', image: sourpatch, item: 'Sourpatch', amount: '5' },
-            { tier: 'common', image: sourpatch, item: 'Sourpatch', amount: '5' },
-            { tier: 'uncommon', image: sourpatch, item: 'Sourpatch', amount: '5' },
-        ],
-    },
-    { 
-        text: 'Uncommon', 
-        image: legendary, 
-        color: 'linear-gradient(158deg, #A1A1A1 8.96%, #474747 85.48%)', 
-        border: '0.7px solid #fff', 
-        hoverColor: '#4f4f4f',
-        requirements: [
-            { tier: 'requirement', image: sourpatch, item: 'Sourpatch', amount: '1' },
-        ],
-        rewards: [
-            { tier: 'legendary', image: sourpatch, item: 'Sourpatch', amount: '5' },
-            { tier: 'epic', image: sourpatch, item: 'Sourpatch', amount: '5' },
-            { tier: 'rare', image: sourpatch, item: 'Sourpatch', amount: '5' },
-            { tier: 'common', image: sourpatch, item: 'Sourpatch', amount: '5' },
-            { tier: 'uncommon', image: sourpatch, item: 'Sourpatch', amount: '5' },
-        ],
-    },
-    { 
-        text: 'Legendary', 
-        image: legendary, 
-        color: 'linear-gradient(158deg, #A1A1A1 8.96%, #474747 85.48%)', 
-        border: '0.7px solid #fff', 
-        hoverColor: '#4f4f4f',
-        requirements: [
-            { tier: 'requirement', image: sourpatch, item: 'Sourpatch', amount: '1' },
-        ],
-        rewards: [
-            { tier: 'legendary', image: sourpatch, item: 'Sourpatch', amount: '5' },
-            { tier: 'epic', image: sourpatch, item: 'Sourpatch', amount: '5' },
-            { tier: 'rare', image: sourpatch, item: 'Sourpatch', amount: '5' },
-            { tier: 'common', image: sourpatch, item: 'Sourpatch', amount: '5' },
-            { tier: 'uncommon', image: sourpatch, item: 'Sourpatch', amount: '5' },
-        ],
-    },
-    // Add more card data as needed
-];
-
 const BUTTON_STYLES = {
     position: 'absolute',
     right: 35,
@@ -192,7 +89,9 @@ const BUTTON_HOVER_STYLES = {
 
 export default function Sidebar() {
     const [isHovered, setHovered] = useState(false);
-    const { selectedBox, setSelectedBox } = selectedData();
+    const { selectedBox, setOpeningBox } = selectedData();
+
+    const { config } = setConfig();
 
     const handleHover = () => {
         setHovered(true);
@@ -214,19 +113,21 @@ export default function Sidebar() {
                 </LinearGradient>
             
                 <div style={CARDS_CONTAINER}>
-                    {cardData.map((card, index) => (
-                        <Card key={index} index={index} {...card} />
-                    ))}
+                {
+                    config && config.Crates
+                    ? config.Crates.map((card, index) => <Card key={index} index={index} {...card} />)
+                    : null
+                }
                 </div>
 
-                {selectedBox !== null && cardData[selectedBox] !== null && (
+                {selectedBox !== null && config.Crates[selectedBox] !== null && (
                     <div style={{display: 'flex', flexDirection: 'column' }}>
                         <LinearGradient style={TITLE_STYLES} gradient={['to top right', '#C1C1C1 , rgba(255, 255, 255, 0.2)']}>
                             Selected Crate
                         </LinearGradient>
 
                         <LinearGradient style={DESCRIPTION_STYLES} gradient={['to top right', '#C1C1C1 , rgba(255, 255, 255, 0.2)']}>
-                            Viewing {cardData[selectedBox].text} Lootbox
+                            Viewing {config.Crates[selectedBox].text} Lootbox
                         </LinearGradient>
 
             
@@ -257,7 +158,7 @@ export default function Sidebar() {
                                     height: '70%',
                                     paddingRight: '4px',
                                 }}>
-                                {cardData[selectedBox].rewards && cardData[selectedBox].rewards.map((reward, index) => (
+                                {config.Crates[selectedBox].rewards && config.Crates[selectedBox].rewards.map((reward, index) => (
                                     <RewardCard key={index} {...reward} />
                                 ))}
                                 </div>
@@ -289,7 +190,7 @@ export default function Sidebar() {
                                     height: '70%',
                                     paddingRight: '4px',
                                 }}>
-                                   {cardData[selectedBox].requirements && cardData[selectedBox].requirements.map((reward, index) => (
+                                   {config.Crates[selectedBox].requirements && config.Crates[selectedBox].requirements.map((reward, index) => (
                                     <RewardCard key={index} {...reward} />
                                     ))}
                                 </div>
@@ -300,7 +201,7 @@ export default function Sidebar() {
 
                             <button 
                             onClick={() => {
-                                alert('open')
+                                setOpeningBox(true)
                             }}
                             onMouseEnter={handleHover}
                             onMouseLeave={handleLeave}
