@@ -28,4 +28,5 @@ files {
 	- Fix the button, positioning is fucked
 	- Useable items instead of UI
 	- Configurable rarity odds
+	- Sounds
 ]]
