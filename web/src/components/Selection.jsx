@@ -1,15 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { LinearGradient } from 'react-text-gradients';
 import Card from './tools/Card';
 import RewardCard from './tools/rewardCard';
-import legendary from '../assets/images/legendary.png';
-import sourpatch from '../assets/images/sour_patch_kids.png';
 import { selectedData, setConfig } from './Store';
 import {MdKeyboardDoubleArrowRight} from 'react-icons/md';
-
-type config = {
-    Crates: Array<any>;
-}
 
 const BOX_STYLES = {
     position: 'relative',

@@ -1,12 +1,5 @@
 import React from 'react';
 
-interface cardProps {
-    tier: string;
-    image: string;
-    item: string;
-    amount: string;
-}
-
 const CARD_STYLES = {
     'legendary': { border: '1.5px solid #FFD900', background: 'radial-gradient(50% 50% at 50% 50%, rgba(0, 0, 0, 0.20) 0%, rgba(255, 217, 0, 0.16) 100%), #262626' },
     'epic': { border: '1.5px solid #6301FF', background: 'radial-gradient(50% 50% at 50% 50%, rgba(0, 0, 0, 0.20) 0%, rgba(99, 1, 255, 0.16) 100%), #262626' },
@@ -50,13 +43,11 @@ const LABEL_STYLES = {
 }
 
 
-const PossibleReward: React.FC<cardProps> = ({ tier, image, item, amount }) => {
+export default function PossibleReward({ tier, image, item, amount }) {
     return (
         <div style={{ ...BOX_CONTAINER, ...CARD_STYLES[tier] }}>
             <img src={image} alt={item} style={IMG_STYLES} />
             <div style={LABEL_STYLES}>{item}</div>
         </div>
     );
-};
-
-export default PossibleReward;
+}

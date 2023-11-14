@@ -3,13 +3,6 @@ import React from 'react';
 
 import {MdKeyboardDoubleArrowRight} from 'react-icons/md';
 
-interface cardProps {
-    tier: string;
-    image: string;
-    item: string;
-    amount: string;
-}
-
 const BOX_CONTAINER = {
     minWidth: '203px', // Adjusted width
     width: 'auto', // Dynamic width based on content   width: '185px',
@@ -64,7 +57,7 @@ const colors = {
     'requirement': '#990000',
 }
 
-const RewardCard: React.FC<cardProps> = ({ tier, image, item, amount }) => {
+export default function RewardCard({ tier, image, item, amount }) {
     return (
         <div style={BOX_CONTAINER}>
           <div style={{ display: 'flex' }}>
@@ -86,6 +79,4 @@ const RewardCard: React.FC<cardProps> = ({ tier, image, item, amount }) => {
           {ColoredSVG({ color: colors[tier] })}
         </div>
       );
-};
-
-export default RewardCard;
+}

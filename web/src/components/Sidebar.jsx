@@ -2,6 +2,8 @@ import React from 'react';
 import allCrates from '../assets/images/allcrates.svg';
 import { LinearGradient } from 'react-text-gradients';
 
+import { setConfig } from './Store';
+
 const BOX_STYLES = {
   position: 'relative',
   padding: '1rem',
@@ -59,11 +61,12 @@ const TITLE_DIV = {
 };
 
 export default function Sidebar() {
+  const { config } = setConfig();
   return (
     <div style={BOX_STYLES}>
       <div style={TITLE_DIV}>
         <LinearGradient style={TITLE_STYLES} gradient={['to top right', '#C1C1C1 , rgba(255, 255, 255, 0.2)']}>
-          Win Rewards
+          {config !== null ? config.Strings['sidebar_title'] : 'Lootboxes'}
         </LinearGradient>
         <LinearGradient style={DESCRIPTION_STYLES} gradient={['to top right', '#C1C1C1 , rgba(255, 255, 255, 0.2)']}>
           Open lootboxes and get a chance to win rewards!

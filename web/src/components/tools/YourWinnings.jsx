@@ -3,10 +3,6 @@ import { LinearGradient } from 'react-text-gradients';
 
 import { fetchNui } from '../../utils/fetchNui';
 
-interface cardProps {
-  item: any;
-}
-
 const BUTTON_STYLES = {
     borderRadius: '10px',
     background: '#326AD7',
@@ -26,7 +22,7 @@ const BUTTON_STYLES_HOVER = {
     background: '#18356e',
 }
 
-const WinningCard: React.FC<cardProps> = ({ item }) => {
+export default function WinningCard({ item }) {
     const [isHovered, setHovered] = useState(false);
 
     const handleHover = () => {
@@ -126,6 +122,4 @@ const WinningCard: React.FC<cardProps> = ({ item }) => {
         </div>
     </div>
     );
-};
-
-export default WinningCard;
+}

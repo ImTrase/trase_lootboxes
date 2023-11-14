@@ -4,16 +4,6 @@ import {MdKeyboardDoubleArrowRight} from 'react-icons/md';
 
 import { selectedData } from '../Store';
 
-
-interface cardProps {
-    text: string;
-    image: string;
-    color: string;
-    border: string;
-    hoverColor: string;
-    index: number;
-}
-
 const CARD_STYLES = {
     border: '1px solid rgba(255, 255, 255, 0.25)',
     background: 'rgba(194, 194, 194, 0.25)',
@@ -111,7 +101,7 @@ const TEXT_DESCRIPTION = {
     padding: 0,
 }
 
-const Card: React.FC<cardProps> = ({ index, text, image, color, border, hoverColor }) => {
+export default function Card({ index, text, image, color, border, hoverColor }) {
     const [isHovered, setHovered] = useState(false);
     const { selectedBox, setSelectedBox } = selectedData();
 
@@ -152,6 +142,4 @@ const Card: React.FC<cardProps> = ({ index, text, image, color, border, hoverCol
            </button>
         </div>
     );
-};
-
-export default Card;
+}

@@ -1,3 +1,5 @@
+lib.locale()
+
 local function toggleNuiFrame(shouldShow, selctionMenu)
   SetNuiFocus(shouldShow, shouldShow)
   SendReactMessage('setVisible', shouldShow)
@@ -23,6 +25,9 @@ RegisterNUICallback('collectItems', function(data, cb)
 end)
 
 local Config = {
+	Strings = {
+		['sidebar_title'] = 'Trase Is Gay'
+	},
 	Crates = {
 		{
 			text = 'Legendary',

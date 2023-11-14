@@ -18,12 +18,11 @@ debugData([
   }
 ])
 
-
-const App: React.FC = () => {
+export default function App() {
 	const { openingBox } = selectedData();
 	const { setConfigData } = setConfig();
 
-	fetchNui<object>('getConfigFile').then(retData => {
+	fetchNui('getConfigFile').then(retData => {
 		setConfigData(retData)
 	})
 
@@ -39,6 +38,4 @@ const App: React.FC = () => {
 			)}
 		</div>
 	);
-};
-
-export default App;
+}
