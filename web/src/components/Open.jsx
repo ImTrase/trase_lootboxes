@@ -57,15 +57,26 @@ export default function OpenCrate() {
         const shuffledRewards = shuffleArray(ODDS, 1000, itemRewards);
         setRandomizedItemRewards(shuffledRewards);
      
-        setSpin(true);
+        // Set a small delay before starting the spin animation
+        const spinTimeout = setTimeout(() => {
+            setSpin(true);
+        }, 50);
     
+        // Calculate the transition value
         const transition = -40090;
         setTranslation(transition)
     
-        setTimeout(() => {
+        // Set another timeout for stopping the spin and showing the winning item
+        const stopSpinTimeout = setTimeout(() => {
             setSpin(false);
             setWinningItem(shuffledRewards[winningNumber]);
         }, 12000);
+    
+        // Cleanup timeouts on component unmount or when openingBox changes
+        return () => {
+            clearTimeout(spinTimeout);
+            clearTimeout(stopSpinTimeout);
+        };
     }, [openingBox]);
 
     return (
@@ -101,7 +112,7 @@ export default function OpenCrate() {
                 position: 'absolute',
                 top: '10%',
            }} gradient={['to top right', '#C1C1C1 , rgba(255, 255, 255, 0.2)']}>
-                Opening
+                {config !== null ? config.Strings['selector_title'] : 'Opening'}
             </LinearGradient>
            <p style={{
                 position: 'absolute',
@@ -110,7 +121,9 @@ export default function OpenCrate() {
                 color: 'rgba(234, 234, 234, 0.80)',
                 textAlign: 'center',
                 fontFamily: 'Fira Sans',
-           }}>Wait for the wheel to stop scrolling!</p>
+           }}>
+                {config !== null ? config.Strings['selector_description'] : 'Wait for the wheel to stop scrolling!'}
+           </p>
 
             <hr
                 style={{
@@ -177,7 +190,8 @@ export default function OpenCrate() {
                     randomizedItemRewards.map((option, index) => (
                         <PossibleReward
                             key={index}
-                            item={option.item}
+                            item={option.itemLabel}
+                            actualItem={option.item}
                             image={option.image}
                             tier={option.tier}
                             amount={option.amount}

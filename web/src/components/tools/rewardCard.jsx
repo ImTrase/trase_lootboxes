@@ -18,7 +18,7 @@ const BOX_CONTAINER = {
 const ICON_STYLES = {
     color: '#b8b8b8',
     fontSize: '22px',
-    marginLeft: '45px',
+    marginLeft: '75px',
     marginTop: '5px',
 }
 
@@ -57,15 +57,17 @@ const colors = {
     'requirement': '#990000',
 }
 
-export default function RewardCard({ tier, image, item, amount }) {
+export default function RewardCard({ tier, item, amount, itemLabel }) {
+    const imagePath = './images/' + item + '.png';
+
     return (
         <div style={BOX_CONTAINER}>
           <div style={{ display: 'flex' }}>
-            <img src={image} style={{ position: 'absolute', top: 0, left: 0, width: 'auto', height: '100%' }} />
+            <img src={imagePath} style={{ position: 'absolute', top: 0, left: 2, width: 'auto', height: '100%' }} />
             <MdKeyboardDoubleArrowRight style={ICON_STYLES} />
             <p style={{
                 position: 'absolute',
-                right: 35,
+                right: 15,
                 textAlign: 'center',
                 marginLeft: '25px',
                 marginTop: '5px',
@@ -73,7 +75,7 @@ export default function RewardCard({ tier, image, item, amount }) {
                 fontSize: '14px',  // Set the font size
                 fontFamily: 'Skate Sans',  // Set the font family
                 zIndex: 2,
-            }}>x{amount} {item}</p>
+            }}>x{amount} {itemLabel}</p>
           </div>
     
           {ColoredSVG({ color: colors[tier] })}

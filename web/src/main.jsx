@@ -1,10 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { VisibilityProvider } from './providers/VisibilityProvider';
-import App from './components/App';
+import App from './components/App'; // This is jsx make it import
 import './index.css';
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
+ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <VisibilityProvider>
       <App />

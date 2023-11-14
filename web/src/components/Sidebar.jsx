@@ -69,7 +69,7 @@ export default function Sidebar() {
           {config !== null ? config.Strings['sidebar_title'] : 'Lootboxes'}
         </LinearGradient>
         <LinearGradient style={DESCRIPTION_STYLES} gradient={['to top right', '#C1C1C1 , rgba(255, 255, 255, 0.2)']}>
-          Open lootboxes and get a chance to win rewards!
+        {config !== null ? config.Strings['sidebar_description'] : 'Open lootboxes and get a chance to win rewards!'}
         </LinearGradient>
       </div>
 

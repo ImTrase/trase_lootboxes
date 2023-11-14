@@ -5,6 +5,8 @@ import RewardCard from './tools/rewardCard';
 import { selectedData, setConfig } from './Store';
 import {MdKeyboardDoubleArrowRight} from 'react-icons/md';
 
+import { fetchNui } from '../utils/fetchNui';
+
 const BOX_STYLES = {
     position: 'relative',
     padding: '1rem',
@@ -64,7 +66,7 @@ const CARDS_CONTAINER = {
 const BUTTON_STYLES = {
     position: 'absolute',
     right: 35,
-    bottom: 100,
+    bottom: 315,
     width: 'auto',
     padding: '14px 18px',
     borderRadius: '8px',
@@ -99,11 +101,11 @@ export default function Sidebar() {
         <div style={BOX_STYLES}>
             <div style={BOX_ELEMENTS}>
                 <LinearGradient style={TITLE_STYLES} gradient={['to top right', '#C1C1C1 , rgba(255, 255, 255, 0.2)']}>
-                    Lootboxes
+                    {config !== null ? config.Strings['selection_title'] : 'Lootboxes'}
                 </LinearGradient>
             
                 <LinearGradient style={DESCRIPTION_STYLES} gradient={['to top right', '#C1C1C1 , rgba(255, 255, 255, 0.2)']}>
-                    Select the lootbox!
+                    {config !== null ? config.Strings['selection_description'] : 'Select the lootbox!'}
                 </LinearGradient>
             
                 <div style={CARDS_CONTAINER}>
@@ -117,18 +119,18 @@ export default function Sidebar() {
                 {selectedBox !== null && config.Crates[selectedBox] !== null && (
                     <div style={{display: 'flex', flexDirection: 'column' }}>
                         <LinearGradient style={TITLE_STYLES} gradient={['to top right', '#C1C1C1 , rgba(255, 255, 255, 0.2)']}>
-                            Selected Crate
+                            {config !== null ? config.Strings['selectedCrate_title'] : 'Selected Crate'}
                         </LinearGradient>
 
                         <LinearGradient style={DESCRIPTION_STYLES} gradient={['to top right', '#C1C1C1 , rgba(255, 255, 255, 0.2)']}>
-                            Viewing {config.Crates[selectedBox].text} Lootbox
+                            {config !== null ? config.Strings['selectedCrate_description'].replace("{LOOTBOX_NAME}", config.Crates[selectedBox].text) : 'Selected Crate'}
                         </LinearGradient>
 
             
                         <div style={{ display: 'flex' }}>
                             <div style={{ display: 'flex', flexDirection: 'column', position: 'relative'}}>
                                 <LinearGradient style={{ fontFamily: 'Skate Sans', }} gradient={['to top right', '#C1C1C1 , rgba(255, 255, 255, 0.2)']}>
-                                    Rewards
+                                    {config !== null ? config.Strings['selectedCrate_rewards'] : 'Rewards'}
                                 </LinearGradient>
 
                                 <hr
@@ -151,6 +153,7 @@ export default function Sidebar() {
                                     overflowY: 'auto',
                                     height: '70%',
                                     paddingRight: '4px',
+                                    maxHeight: '60%',
                                 }}>
                                 {config.Crates[selectedBox].rewards && config.Crates[selectedBox].rewards.map((reward, index) => (
                                     <RewardCard key={index} {...reward} />
@@ -160,7 +163,7 @@ export default function Sidebar() {
 
                             <div style={{ display: 'flex', flexDirection: 'column', position: 'relative', marginLeft: '24px'}}>
                                 <LinearGradient style={{ fontFamily: 'Skate Sans', }} gradient={['to top right', '#C1C1C1 , rgba(255, 255, 255, 0.2)']}>
-                                    Requirements
+                                {config !== null ? config.Strings['selectedCrate_requirements'] : 'Requirements'}
                                 </LinearGradient>
 
                                 <hr
@@ -185,25 +188,38 @@ export default function Sidebar() {
                                     paddingRight: '4px',
                                 }}>
                                    {config.Crates[selectedBox].requirements && config.Crates[selectedBox].requirements.map((reward, index) => (
-                                    <RewardCard key={index} {...reward} />
+                                        <RewardCard key={index} {...reward} />
                                     ))}
                                 </div>
                             </div>
                         
                             
                             <MdKeyboardDoubleArrowRight style={{ color: 'white', fontSize: '10rem', marginLeft: '7rem', marginTop: '5px', }} />
-
-                            <button 
+                        </div>
+                        
+                        <button 
                             onClick={() => {
-                                setOpeningBox(true)
+                                // Callback to check if the user has enough requirements
+                                if (config.Crates[selectedBox].requirements) {
+                                    fetchNui('trase_lootboxes:client:checkRequirements', { data: selectedBox }).then((response) => {
+                                        if (!response) {
+                                            return
+                                        } else {
+                                            setOpeningBox(true)
+                                        }
+                                    }
+                                )} else {
+                                    setOpeningBox(true)
+                                }
+
+                        
                             }}
                             onMouseEnter={handleHover}
                             onMouseLeave={handleLeave}
                             style={{ ...BUTTON_STYLES, ...(isHovered && BUTTON_HOVER_STYLES) }}
                             >
-                                Open Crate
+                                {config !== null ? config.Strings['selectedCrate_button_open'] : 'Open Crate'}
                             </button>
-                        </div>
                     </div>
                 )}
             </div>

@@ -22,13 +22,11 @@ const BOX_CONTAINER = {
 }
 
 const IMG_STYLES = {
-    width: '100%', // Ensure the image takes up 100% width
-    position: 'relative', // Position the image
-    top: '0px',
-    padding: '0px',
-    margin: '0px',
-    height: 'auto', // Maintain aspect ratio
-}
+    width: '100px', // Set a specific width for the image
+    height: 'auto', // Let the height adjust automatically to maintain the aspect ratio
+    objectFit: 'cover', // Make the image cover the container while maintaining aspect ratio
+    borderRadius: '15px', // Optionally, add border-radius to match the container
+};
 
 const LABEL_STYLES = {
     marginTop: '8px',
@@ -37,16 +35,31 @@ const LABEL_STYLES = {
     fontFamily: 'Fira Sans', // Specify fallback font
     fontWeight: 400,
     fontSize: '16px',
+    position: 'absolute',
+    bottom: 15,
+    left: 0,
+    right: 0,
+    display: 'flex',
+    justifyContent: 'center',
+};
 
-    position: 'relative', // Position the image
-    bottom: '10px',
-}
 
+export default function PossibleReward({ tier, item, actualItem, amount, itemLabel }) {
+    const imagePath = './images/' + actualItem + '.png';
 
-export default function PossibleReward({ tier, image, item, amount }) {
     return (
-        <div style={{ ...BOX_CONTAINER, ...CARD_STYLES[tier] }}>
-            <img src={image} alt={item} style={IMG_STYLES} />
+        <div style={{ ...BOX_CONTAINER, ...CARD_STYLES[tier], position: 'relative' }}>
+            <p style={{
+                color: 'rgba(234, 234, 234, 0.80)',
+                fontFamily: 'Fira Sans',
+                fontWeight: 400,
+                fontSize: '16px',
+                position: 'absolute',
+                top: '-10px',
+                right: '10px',
+            }}>x {amount}</p>
+            
+            <img src={imagePath} alt={itemLabel} style={IMG_STYLES} />
             <div style={LABEL_STYLES}>{item}</div>
         </div>
     );

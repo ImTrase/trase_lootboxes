@@ -5,32 +5,29 @@ import { isEnvBrowser } from "../utils/misc";
 
 import { selectedData } from "../components/Store";
 
-const VisibilityCtx = createContext<VisibilityProviderValue | null>(null);
+const VisibilityCtx = createContext(null);
 
-interface VisibilityProviderValue {
-  setVisible: (visible: boolean) => void;
-  visible: boolean;
-}
-
-export const VisibilityProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+const VisibilityProvider = ({ children }) => {
   const [visible, setVisible] = useState(false);
-  const { reset } = selectedData();
+  const { reset, openingBox } = selectedData();
 
-  const handleClose = (isVisible: boolean) => {
+  const handleClose = (isVisible) => {
     reset();
     setVisible(isVisible);
   };
 
-  useNuiEvent<boolean>("setVisible", handleClose);
+  useNuiEvent("setVisible", handleClose);
 
   useEffect(() => {
     if (!visible) return;
 
-    const keyHandler = (e: KeyboardEvent) => {
+    const keyHandler = (e) => {
       if (["Backspace", "Escape"].includes(e.code)) {
         if (!isEnvBrowser()) {
-          reset();
-          fetchNui("hideFrame")
+          if (openingBox === false) {
+            reset();
+            fetchNui("hideFrame");
+          }
         } else {
           setVisible(!visible);
         }
@@ -40,7 +37,7 @@ export const VisibilityProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     window.addEventListener("keydown", keyHandler);
 
     return () => window.removeEventListener("keydown", keyHandler);
-  }, [visible]);
+  }, [visible, openingBox, reset]);
 
   return (
     <VisibilityCtx.Provider
@@ -49,11 +46,13 @@ export const VisibilityProvider: React.FC<{ children: React.ReactNode }> = ({ ch
         setVisible,
       }}
     >
-    <div style={{ display: visible ? 'block' : 'none', height: '100%', transition: 'display 0s' }}>
-      {children}
-    </div>
+      <div style={{ display: visible ? "block" : "none", height: "100%", transition: "display 0s" }}>
+        {children}
+      </div>
     </VisibilityCtx.Provider>
   );
 };
 
-export const useVisibility = () => useContext<VisibilityProviderValue>(VisibilityCtx as React.Context<VisibilityProviderValue>);
+const useVisibility = () => useContext(VisibilityCtx);
+
+export { VisibilityProvider, useVisibility };

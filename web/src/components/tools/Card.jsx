@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import stripe from '../../assets/images/stripes.svg';
 import {MdKeyboardDoubleArrowRight} from 'react-icons/md';
 
-import { selectedData } from '../Store';
+import { selectedData, setConfig } from '../Store';
 
 const CARD_STYLES = {
     border: '1px solid rgba(255, 255, 255, 0.25)',
@@ -104,7 +104,7 @@ const TEXT_DESCRIPTION = {
 export default function Card({ index, text, image, color, border, hoverColor }) {
     const [isHovered, setHovered] = useState(false);
     const { selectedBox, setSelectedBox } = selectedData();
-
+    const { config } = setConfig();
     const handleHover = () => {
         setHovered(true);
     };
@@ -119,6 +119,7 @@ export default function Card({ index, text, image, color, border, hoverColor }) 
         border: border,
     };
 
+
     return (
         <div style={CARD_STYLES}>
             <img src={stripe} style={STRIPE_STYLES}></img>
@@ -129,7 +130,9 @@ export default function Card({ index, text, image, color, border, hoverColor }) 
                 <MdKeyboardDoubleArrowRight style={ICON_STYLES} />
                 <div style={TEXT_CONTAINER}>
                     <p style={TEXT_STYLES}>{text}</p>
-                    <p style={TEXT_DESCRIPTION}>Lootbox</p>
+                    <p style={TEXT_DESCRIPTION}>
+                        {config !== null ? config.Strings['crate_description'] : 'Lootbox!'}
+                    </p>
                 </div>
             </div>
            
@@ -138,7 +141,7 @@ export default function Card({ index, text, image, color, border, hoverColor }) 
             onMouseLeave={handleLeave}
             onClick={() => setSelectedBox(index)}
             style={buttonStyles}>
-                SELECT CRATE
+                {config !== null ? config.Strings['crate_button_select'] : 'SELECT CRATE'}
            </button>
         </div>
     );
