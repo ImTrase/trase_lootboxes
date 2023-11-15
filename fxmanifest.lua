@@ -1,6 +1,8 @@
 fx_version 'cerulean'
-games { 'gta5' }
+game 'gta5'
+
 author 'Trase'
+description 'An advanced and unique lootbox system for your FiveM server.'
 lua54 'yes'
 version '1.0.0'
 
@@ -20,6 +22,12 @@ server_scripts {
 files {
 	'web/build/index.html',
 	'web/build/**/*',
+}
+
+escrow_ignore {
+    'framework/*.lua',
+    'config.lua',
+    'server/versions.lua',
 }
 
 --[[
