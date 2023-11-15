@@ -18,7 +18,6 @@ server_scripts {
 }
 
 files {
-	'locales/*.json',
 	'web/build/index.html',
 	'web/build/**/*',
 }

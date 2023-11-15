@@ -2,7 +2,7 @@ Config = {}
 
 Config.Framework = 'auto' -- auto, esx, qbcore (custom setup in framework folder)
 Config.EnableSpinningSound = true -- When selecting a reward after opening a crate, play a spinning sound
-Config.UseableItems = true -- Use items instead of UI to open crates
+Config.UseableItems = false -- Use items instead of UI to open crates
 Config.Command = 'lootbox' -- Command to open the UI (only if UseableItems is false)
 
 Config.UI = { -- Change the UI to your liking
@@ -53,15 +53,15 @@ Config.Strings = {
 Config.Crates = {
     {
         text = 'Legendary',
-        -- image = 'https://imgur.com/siLz0Wa.png', -- If Config.UseableItems is set to true, you can remove this line
-        -- color = 'linear-gradient(158deg, #D24C00 8.96%, #6A2600 85.48%)', -- If Config.UseableItems is set to true, you can remove this line
-        -- border = '0.7px solid #FFBD80', -- If Config.UseableItems is set to true, you can remove this line
-        -- hoverColor = '#804719', -- If Config.UseableItems is set to true, you can remove this line
-        item = 'legendary_key', -- If you want to use an item to open the crate, uncomment this line and change the item to the item you want to use (make sure Config.UseableItems is set to true)
-        requirements = {
+        image = 'https://imgur.com/siLz0Wa.png', -- If Config.UseableItems is set to true, you can remove this line
+        color = 'linear-gradient(158deg, #D24C00 8.96%, #6A2600 85.48%)', -- If Config.UseableItems is set to true, you can remove this line
+        border = '0.7px solid #FFBD80', -- If Config.UseableItems is set to true, you can remove this line
+        hoverColor = '#804719', -- If Config.UseableItems is set to true, you can remove this line
+        -- item = 'legendary_key', -- If you want to use an item to open the crate, uncomment this line and change the item to the item you want to use (make sure Config.UseableItems is set to true)
+        requirements = { -- The required items to open the crate
             { tier = 'requirement', item = 'legendary_key', itemLabel = 'Legendary Key', amount = '1' },
         },
-        rewards = {
+        rewards = { -- The possible rewards to reveive when opening the crate
             { tier = 'legendary', item = 'WEAPON_ASSAULTRIFLE', itemLabel = 'Assault Rifle', amount = '1' },
             { tier = 'legendary', item = 'WEAPON_CARBINERIFLE', itemLabel = 'Carbine Rifle', amount = '1' },
             { tier = 'epic', item = 'WEAPON_APPISTOL', itemLabel = 'AP Pistol', amount = '1' },
