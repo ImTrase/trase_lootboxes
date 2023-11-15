@@ -86,6 +86,10 @@ if Config.Framework == 'esx' then
             end
         end
     end
+
+    FRAMEWORK.addItemUseCallback = function(item, callback)
+        ESX.RegisterUsableItem(item, callback)
+    end
 elseif Config.Framework == 'qbcore' then
     QBCore = loadQBCore()
 
@@ -96,36 +100,64 @@ elseif Config.Framework == 'qbcore' then
         return player
     end
 
-    local money_found = { 'cash', 'crypto', 'bank' }
-
     FRAMEWORK.addItem = function(target, item, amount)
-        if item == 'money' then item = 'cash' end -- Conversion for ESX
         local player = FRAMEWORK.getPlayer(target)
         if not player then return end
 
         if type(item) == 'string' then
-            if item == money_found then
-                player.Functions.AddMoney(item, amount)
-            else
-                player.Functions.AddItem(item, amount)
-            end
+            player.Functions.AddItem(item, amount)
         end
     end
 
     FRAMEWORK.getItem = function(target, item)
-        if item == 'money' then item = 'cash' end -- Conversion for ESX
         local player = FRAMEWORK.getPlayer(target)
         if not player then return end
 
         if type(item) == 'string' then
-            if item == money_found then
-                return player.PlayerData.money
-            else
-                local itemData = player.Functions.GetItemByName(item)
-                if not itemData then return end
-                return itemData.count or itemData.amount or 0
-            end
+            local itemData = player.Functions.GetItemByName(item)
+            if not itemData then return 0 end
+            return itemData.amount or 0
         end
+    end
+
+    FRAMEWORK.removeItem = function(target, item, amount)
+        local player = FRAMEWORK.getPlayer(target)
+        if not player then return end
+
+        if type(item) == 'string' then
+            player.Functions.RemoveItem(item, amount)
+        end
+    end
+
+    FRAMEWORK.addMoney = function(target, moneyType, amount)
+        local player = FRAMEWORK.getPlayer(target)
+        if not player then return end
+
+        if moneyType == 'cash' or moneyType == 'bank' or moneyType == 'crypto' then
+            player.Functions.AddMoney(moneyType, amount)
+        end
+    end
+
+    FRAMEWORK.getMoney = function(target, moneyType)
+        local player = FRAMEWORK.getPlayer(target)
+        if not player then return 0 end
+
+        if moneyType == 'cash' or moneyType == 'bank' or moneyType == 'crypto' then
+            return player.PlayerData.money[moneyType] or 0
+        end
+    end
+
+    FRAMEWORK.removeMoney = function(target, moneyType, amount)
+        local player = FRAMEWORK.getPlayer(target)
+        if not player then return end
+
+        if moneyType == 'cash' or moneyType == 'bank' or moneyType == 'crypto' then
+            player.Functions.RemoveMoney(moneyType, amount)
+        end
+    end
+
+    FRAMEWORK.addItemUseCallback = function(item, callback)
+        QBCore.Functions.CreateUseableItem(item, callback)
     end
 end
 

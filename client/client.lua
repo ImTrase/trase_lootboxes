@@ -1,6 +1,6 @@
-local function toggleNuiFrame(shouldShow)
+local function toggleNuiFrame(shouldShow, crateToOpen)
 	SetNuiFocus(shouldShow, shouldShow)
-	SendNUIMessage({ action = 'setVisible', data = shouldShow })
+	SendNUIMessage({ action = 'setVisible', data = { isVisible = shouldShow, crateKey = crateToOpen } })
 end
 
 RegisterNUICallback('hideFrame', function(_, cb)
@@ -24,7 +24,13 @@ RegisterNUICallback('getConfigFile', function(data, cb)
 end)
 
 RegisterNetEvent('trase_lootboxes:client:openUI', function()
+	if Config.UseableItems then return end
 	toggleNuiFrame(true)
+end)
+
+RegisterNetEvent('trase_lootboxes:client:itemUsed', function(crateId)
+	if not Config.UseableItems then return end
+	toggleNuiFrame(true, crateId)
 end)
 
 RegisterNetEvent('trase_lootboxes:client:notify', Config.Notification)

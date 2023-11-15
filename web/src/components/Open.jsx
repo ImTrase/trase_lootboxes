@@ -1,22 +1,15 @@
 import React, { useState, useRef, useEffect } from 'react';
 
-import {debugData} from "../utils/debugData";
 import PossibleReward from './tools/PossibleReward'
 import WinningCard from './tools/YourWinnings'
 import selector from '../assets/images/selector.svg'
+
+import opening from '../assets/opening.mp3'
 
 import { selectedData, setConfig } from './Store';
 
 import { LinearGradient } from 'react-text-gradients';
 
-// MUST ADD UP TO 1, make configurable
-const ODDS = {
-    ['legendary']: 0.07,
-    ['epic']: 0.1,
-    ['rare']: 0.13,
-    ['uncommon']: 0.2,
-    ['common']: 0.5,
-};
 
 function shuffleArray(odds, totalBoxes, options) {
     const boxes = [];
@@ -52,9 +45,19 @@ export default function OpenCrate() {
     const { config } = setConfig();
     const { selectedBox, openingBox } = selectedData();
 
+    const audioRef = useRef(null);
+
+    useEffect(() => {
+        // Play the audio when the spin starts
+        if (spin && config.EnableSpinningSound) {
+            audioRef.current.play();
+        }
+    }, [spin]);
+
     useEffect(() => {
         const itemRewards = Array.from({ length: 1000 }, () => config.Crates[selectedBox].rewards).flat();
-        const shuffledRewards = shuffleArray(ODDS, 1000, itemRewards);
+        const odds = config.RarityOdds
+        const shuffledRewards = shuffleArray(odds, 1000, itemRewards);
         setRandomizedItemRewards(shuffledRewards);
      
         // Set a small delay before starting the spin animation
@@ -137,6 +140,9 @@ export default function OpenCrate() {
                 }}
             />
             
+
+            {/* Audio */}
+            <audio ref={audioRef} src={opening} />
 
             {/* Arrow Section */}
             <img src={selector} style={{

@@ -11,7 +11,6 @@ const BOX_STYLES = {
     position: 'relative',
     padding: '1rem',
     margin: '1rem',
-    background: 'linear-gradient(130deg, #0038FF -3.19%, rgba(0, 0, 0, 0.50) 62.7%)',
     height: '65%',
     width: '64%',
     overflow: 'hidden', // Ensure the inner border does not affect dimensions
@@ -64,9 +63,6 @@ const CARDS_CONTAINER = {
 }
 
 const BUTTON_STYLES = {
-    position: 'absolute',
-    right: 35,
-    bottom: 315,
     width: 'auto',
     padding: '14px 18px',
     borderRadius: '8px',
@@ -77,6 +73,10 @@ const BUTTON_STYLES = {
     fontSize: '20px',
     cursor: 'pointer',
     transition: 'background 0.2s ease-in-out',
+    // Got to be a better way to do this, but it works for now
+    position: 'fixed',
+    right: 300,
+    bottom: 370,
 };
   
 const BUTTON_HOVER_STYLES = {
@@ -97,8 +97,10 @@ export default function Sidebar() {
         setHovered(false);
     };
 
+    const backgroundColor = config !== null ? config.UI.Main : 'linear-gradient(158deg, #D24C00 8.96%, #6A2600 85.48%)';
+
     return (
-        <div style={BOX_STYLES}>
+        <div style={{...BOX_STYLES, background: backgroundColor }}>
             <div style={BOX_ELEMENTS}>
                 <LinearGradient style={TITLE_STYLES} gradient={['to top right', '#C1C1C1 , rgba(255, 255, 255, 0.2)']}>
                     {config !== null ? config.Strings['selection_title'] : 'Lootboxes'}
@@ -117,7 +119,7 @@ export default function Sidebar() {
                 </div>
 
                 {selectedBox !== null && config.Crates[selectedBox] !== null && (
-                    <div style={{display: 'flex', flexDirection: 'column' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
                         <LinearGradient style={TITLE_STYLES} gradient={['to top right', '#C1C1C1 , rgba(255, 255, 255, 0.2)']}>
                             {config !== null ? config.Strings['selectedCrate_title'] : 'Selected Crate'}
                         </LinearGradient>
@@ -153,7 +155,7 @@ export default function Sidebar() {
                                     overflowY: 'auto',
                                     height: '70%',
                                     paddingRight: '4px',
-                                    maxHeight: '60%',
+                                    maxHeight: '300px',
                                 }}>
                                 {config.Crates[selectedBox].rewards && config.Crates[selectedBox].rewards.map((reward, index) => (
                                     <RewardCard key={index} {...reward} />
@@ -196,30 +198,30 @@ export default function Sidebar() {
                             
                             <MdKeyboardDoubleArrowRight style={{ color: 'white', fontSize: '10rem', marginLeft: '7rem', marginTop: '5px', }} />
                         </div>
-                        
-                        <button 
-                            onClick={() => {
-                                // Callback to check if the user has enough requirements
-                                if (config.Crates[selectedBox].requirements) {
-                                    fetchNui('trase_lootboxes:client:checkRequirements', { data: selectedBox }).then((response) => {
-                                        if (!response) {
-                                            return
-                                        } else {
-                                            setOpeningBox(true)
-                                        }
-                                    }
-                                )} else {
-                                    setOpeningBox(true)
-                                }
 
-                        
-                            }}
-                            onMouseEnter={handleHover}
-                            onMouseLeave={handleLeave}
-                            style={{ ...BUTTON_STYLES, ...(isHovered && BUTTON_HOVER_STYLES) }}
-                            >
-                                {config !== null ? config.Strings['selectedCrate_button_open'] : 'Open Crate'}
-                            </button>
+                        <button
+                        onClick={() => {
+                            // Callback to check if the user has enough requirements
+                            if (config.Crates[selectedBox].requirements) {
+                                fetchNui('trase_lootboxes:client:checkRequirements', { data: selectedBox }).then((response) => {
+                                    if (!response) {
+                                        return
+                                    } else {
+                                        setOpeningBox(true)
+                                    }
+                                }
+                            )} else {
+                                setOpeningBox(true)
+                            }
+
+                    
+                        }}
+                        onMouseEnter={handleHover}
+                        onMouseLeave={handleLeave}
+                        style={{ ...BUTTON_STYLES, ...(isHovered && BUTTON_HOVER_STYLES) }}
+                        >
+                            {config !== null ? config.Strings['selectedCrate_button_open'] : 'Open Crate'}
+                        </button>
                     </div>
                 )}
             </div>

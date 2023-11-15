@@ -24,9 +24,21 @@ files {
 }
 
 --[[
-	Todo List:
-	- Fix the button, positioning is fucked
-	- Useable items instead of UI
+	Features:
+	- Optimized at 0.00ms
+	- Secure & Protected
+	- Highly Configurable
+	- Configurable lootboxes
+	- Configurable rewards
+	- Configurable requirements
+	- Configurable UI
+	- Useable Items
+	- Configurable sounds
 	- Configurable rarity odds
-	- Sounds
+	- Configurable useable items
+	- Configurable discord logs
+	- Configurable locales
+	- ESX/QBCore Compatible
+	- Configurable all images
+	- Configurable notification
 ]]

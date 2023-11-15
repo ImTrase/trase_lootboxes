@@ -3,17 +3,31 @@ import { useNuiEvent } from "../hooks/useNuiEvent";
 import { fetchNui } from "../utils/fetchNui";
 import { isEnvBrowser } from "../utils/misc";
 
-import { selectedData } from "../components/Store";
+import { selectedData, setConfig } from "../components/Store";
 
 const VisibilityCtx = createContext(null);
 
 const VisibilityProvider = ({ children }) => {
   const [visible, setVisible] = useState(false);
-  const { reset, openingBox } = selectedData();
+  const { reset, openingBox, setOpeningBox, setSelectedBox } = selectedData();
 
-  const handleClose = (isVisible) => {
+  const { config } = setConfig();
+
+  const handleClose = (data) => {
     reset();
-    setVisible(isVisible);
+
+    if (data.isVisible) {
+      if (config.UseableItems && data.crateKey !== null) {
+        setSelectedBox(data.crateKey); // lets set our data first
+        setOpeningBox(true); // then say we are opening a box
+        setVisible(data.isVisible); // then set the visibility
+        console.log('yes')
+      } else {
+        setVisible(data.isVisible);
+      }
+    } else {
+      setVisible(data.isVisible);
+    }
   };
 
   useNuiEvent("setVisible", handleClose);

@@ -57,8 +57,17 @@ const colors = {
     'requirement': '#990000',
 }
 
+const MoneyTypes = {
+    'money': true,
+    'cash': true,
+    'bank': true,
+    'crypto': true,
+    'black_money': true,
+}
+
 export default function RewardCard({ tier, item, amount, itemLabel }) {
     const imagePath = './images/' + item + '.png';
+    const itemPrefix = MoneyTypes[item] ? '$' : 'x';
 
     return (
         <div style={BOX_CONTAINER}>
@@ -75,7 +84,9 @@ export default function RewardCard({ tier, item, amount, itemLabel }) {
                 fontSize: '14px',  // Set the font size
                 fontFamily: 'Skate Sans',  // Set the font family
                 zIndex: 2,
-            }}>x{amount} {itemLabel}</p>
+            }}>
+                {itemPrefix}{amount} {MoneyTypes[item] ? '' : itemLabel}
+            </p>
           </div>
     
           {ColoredSVG({ color: colors[tier] })}

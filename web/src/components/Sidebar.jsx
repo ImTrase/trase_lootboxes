@@ -8,7 +8,6 @@ const BOX_STYLES = {
   position: 'relative',
   padding: '1rem',
   margin: '1rem',
-  background: 'linear-gradient(150deg, #0038FF -3.19%, rgba(0, 0, 0, 0.50) 62.7%)',
   height: '65%',
   width: '14%',
   overflow: 'hidden', // Ensure the inner border does not affect dimensions
@@ -62,8 +61,10 @@ const TITLE_DIV = {
 
 export default function Sidebar() {
   const { config } = setConfig();
+  const backgroundColor = config !== null ? config.UI.Sidebar : 'linear-gradient(150deg, #0038FF -3.19%, rgba(0, 0, 0, 0.50) 62.7%)';
+
   return (
-    <div style={BOX_STYLES}>
+    <div style={{...BOX_STYLES, background: backgroundColor }}>
       <div style={TITLE_DIV}>
         <LinearGradient style={TITLE_STYLES} gradient={['to top right', '#C1C1C1 , rgba(255, 255, 255, 0.2)']}>
           {config !== null ? config.Strings['sidebar_title'] : 'Lootboxes'}

@@ -1,0 +1,29 @@
+	['legendary_key'] = {
+		label = 'Legendary Crate Key',
+		description = 'Can be used to open a legendary lootbox!',
+		weight = 20,
+	},
+
+	['epic_key'] = {
+		label = 'Epic Crate Key',
+		description = 'Can be used to open a epic lootbox!',
+		weight = 20,
+	},
+
+	['rare_key'] = {
+		label = 'Rare Crate Key',
+		description = 'Can be used to open a rare lootbox!',
+		weight = 20,
+	},
+
+	['uncommon_key'] = {
+		label = 'Uncommon Crate Key',
+		description = 'Can be used to open an uncommon lootbox!',
+		weight = 20,
+	},
+
+	['common_key'] = {
+		label = 'Common Crate Key',
+		description = 'Can be used to open an common lootbox!',
+		weight = 20,
+	},

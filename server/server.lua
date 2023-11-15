@@ -1,6 +1,21 @@
 local FRAMEWORK <const> = require 'framework.server'
 local legit = {}
 
+local CreateThread <const> = CreateThread
+local Wait <const> = Wait
+local os <const> = os
+local print <const> = print
+local type <const> = type
+local json <const> = json
+local table <const> = table
+local string <const> = string
+local tonumber <const> = tonumber
+local GetPlayerIdentifiers <const> = GetPlayerIdentifiers
+local GetPlayerName <const> = GetPlayerName
+local PerformHttpRequest <const> = PerformHttpRequest
+local RegisterCommand <const> = RegisterCommand
+local RegisterNetEvent <const> = RegisterNetEvent
+local TriggerClientEvent <const> = TriggerClientEvent
 
 local function getIdentifiers(player)
     local t = {}
@@ -74,10 +89,34 @@ local  function discordLog(args, cb)
     end, 'POST', json.encode(encodedData), { ['Content-Type'] = 'application/json' })
 end
 
-RegisterCommand('lootboxes', function(src)
-    TriggerClientEvent('trase_lootboxes:client:openUI', src)
-    legit[src] = true
-end, false)
+
+if not Config.UseableItems then
+    RegisterCommand(Config.Command, function(src)
+        TriggerClientEvent('trase_lootboxes:client:openUI', src)
+        legit[src] = true
+    end, false)
+else
+    local createdItems = {}
+    local amount = 0
+    for crateId, crate in pairs(Config.Crates) do
+        if not crate.item then
+            print(('^1[trase_lootboxes] ^3WARNING: ^7You have a lootbox without an item. Please add an item to the lootbox: %s.'):format(crate.text))
+        else
+            if not createdItems[crate.item] then
+                createdItems[crate.item] = true
+                amount += 1
+                FRAMEWORK.addItemUseCallback(crate.item, function(source, args)
+                    TriggerClientEvent('trase_lootboxes:client:itemUsed', source, crateId -1 --[[ Because lua index starts at 1 instead of 0 ]])
+                    legit[source] = true
+                end)
+            else
+                print(('^1[trase_lootboxes] ^3WARNING: ^7You have multiple lootboxes with the same item. Please remove one of them. Item: %s'):format(crate.item))
+            end
+        end
+    end
+
+    print(('^4[trase_lootboxes] ^2[SUCCESS]: ^7%s items have been registered for lootboxes.'):format(amount))
+end
 
 RegisterNetEvent('trase_lootboxes:server:reward', function(args)
     local src = source
@@ -87,7 +126,8 @@ RegisterNetEvent('trase_lootboxes:server:reward', function(args)
     FRAMEWORK.addItem(src, item.item, item.amount)
     local receiveNotification = Config.Strings['winnings_notification_description']:gsub('{AMOUNT}', item.amount):gsub('{ITEM}', item.itemLabel)
     TriggerClientEvent('trase_lootboxes:client:notify', src, { type = 'success', title = Config.Strings['winnings_notification_title'], description = receiveNotification })
-
+    legit[src] = nil
+    
     if Config.Server.Discord.Enabled then
         local fields = {}
         fields[#fields +1] = { name = 'Player', value = ('%s (Id: %s)'):format(GetPlayerName(src), src), inline = false }
@@ -132,4 +172,155 @@ lib.callback.register('trase_lootboxes:server:passRequirements', function(source
     end
 
     return canOpen
+end)
+
+
+local function errorLog(msg)
+    CreateThread(function()
+        while true do
+            Wait(4500)
+            print(('^4[Trase_Lootboxes]^0: ^1[ERROR]^7: %s'):format(msg))
+            print('^4[Trase_Lootboxes]^0: ^3[DOCUMENTATION]^7: For installation guides & more visit our documentation https://docs.trase.dev/.')
+            print('^4[Trase_Lootboxes]^0: ^2[SUPPORT]^7: For support contact us on discord https://discord.gg/trase/.')
+        end
+    end)
+end
+
+-- Continue Config verification
+CreateThread(function()
+    local t = type
+
+    local startTime = os.microtime()
+
+    -- Check Config.Framework
+    if (t(Config.Framework) ~= 'string') then
+        return errorLog('^3Config.Framework^0 is not a ^1string^0')
+    end
+
+    -- Check Config.EnableSpinningSound
+    if (t(Config.EnableSpinningSound) ~= 'boolean') then
+        return errorLog('^3Config.EnableSpinningSound^0 is not a ^1boolean^0.')
+    end
+
+    -- Check Config.UI
+    if (t(Config.UI) ~= 'table') then
+        return errorLog('^3Config.UI^0 is not a ^1table^0.')
+    end
+
+    -- Check Config.RarityOdds
+    if (t(Config.RarityOdds) ~= 'table') then
+        return errorLog('^3Config.RarityOdds^0 is not a ^1table^0.')
+    else
+        local totalOdds = 0
+        for _, odd in pairs(Config.RarityOdds) do
+            if (t(odd) ~= 'number') then
+                return errorLog('^3Config.RarityOdds^0 is not set to a ^1integer^0.')
+            end
+            totalOdds = totalOdds + odd
+        end
+        if (totalOdds ~= 1) then
+            return errorLog('^3Config.RarityOdds^0 do not add up to ^11^0.')
+        end
+    end
+
+    -- Check Config.Strings
+    if (t(Config.Strings) ~= 'table') then
+        return errorLog('^3Config.Strings^0 is not a ^1table^0.')
+    end
+
+    -- Check Config.Crates
+    if (t(Config.Crates) ~= 'table') then
+        return errorLog('^3Config.Crates^0 is not a ^1table^0.')
+    else
+        for crateId, crate in ipairs(Config.Crates) do
+            if (t(crate) ~= 'table') then
+                return errorLog('^3Config.Crates[' .. crateId .. ']^0 is not a ^1table^0.')
+            end
+
+            if (t(crate.text) ~= 'string') then
+                return errorLog('^3Config.Crates[' .. crateId .. '].text^0 is not a ^1string^0.')
+            end
+
+            if not Config.UseableItems then
+                if (t(crate.image) ~= 'string') then
+                    return errorLog('^3Config.Crates[' .. crateId .. '].image^0 is not a ^1string^0.')
+                end
+
+                if (t(crate.color) ~= 'string') then
+                    return errorLog('^3Config.Crates[' .. crateId .. '].color^0 is not a ^1string^0.')
+                end
+
+                if (t(crate.border) ~= 'string') then
+                    return errorLog('^3Config.Crates[' .. crateId .. '].border^0 is not a ^1string^0.')
+                end
+
+                if (t(crate.hoverColor) ~= 'string') then
+                    return errorLog('^3Config.Crates[' .. crateId .. '].hoverColor^0 is not a ^1string^0.')
+                end
+            else
+                if not crate.item then
+                    return errorLog('^3Config.Crates[' .. crateId .. '].item^0 is not set.')
+                else
+                    if (t(crate.item) ~= 'string') then
+                        return errorLog('^3Config.Crates[' .. crateId .. '].item^0 is not a ^1string^0.')
+                    end
+                end
+            end
+
+            if (t(crate.requirements) ~= 'table') then
+                return errorLog('^3Config.Crates[' .. crateId .. '].requirements^0 is not a ^1table^0.')
+            else
+                for requirementId, requirement in ipairs(crate.requirements) do
+                    if (t(requirement) ~= 'table') then
+                        return errorLog('^3Config.Crates[' .. crateId .. '].requirements[' .. requirementId .. ']^0 is not a ^1table^0.')
+                    end
+
+                    if (t(requirement.tier) ~= 'string') then
+                        return errorLog('^3Config.Crates[' .. crateId .. '].requirements[' .. requirementId .. '].tier^0 is not a ^1string^0.')
+                    end
+
+                    if (t(requirement.item) ~= 'string') then
+                        return errorLog('^3Config.Crates[' .. crateId .. '].requirements[' .. requirementId .. '].item^0 is not a ^1string^0.')
+                    end
+
+                    if (t(requirement.amount) ~= 'string') then
+                        return errorLog('^3Config.Crates[' .. crateId .. '].requirements[' .. requirementId .. '].amount^0 is not a ^1string^0.')
+                    end
+                end
+            end
+
+            if (t(crate.rewards) ~= 'table') then
+                return errorLog('^3Config.Crates[' .. crateId .. '].rewards^0 is not a ^1table^0.')
+            else
+                for rewardId, reward in ipairs(crate.rewards) do
+                    if (t(reward) ~= 'table') then
+                        return errorLog('^3Config.Crates[' .. crateId .. '].rewards[' .. rewardId .. ']^0 is not a ^1table^0.')
+                    end
+
+                    if (t(reward.tier) ~= 'string') then
+                        return errorLog('^3Config.Crates[' .. crateId .. '].rewards[' .. rewardId .. '].tier^0 is not a ^1string^0.')
+                    end
+
+                    if (t(reward.item) ~= 'string') then
+                        return errorLog('^3Config.Crates[' .. crateId .. '].rewards[' .. rewardId .. '].item^0 is not a ^1string^0.')
+                    end
+
+                    if (t(reward.amount) ~= 'string') then
+                        return errorLog('^3Config.Crates[' .. crateId .. '].rewards[' .. rewardId .. '].amount^0 is not a ^1string^0.')
+                    end
+                end
+            end
+        end
+    end
+
+    -- Check Config.Notification
+    if (t(Config.Notification) ~= 'function') then
+        return errorLog('^3Config.Notification^0 is not a ^1function^0.')
+    end
+
+    local loadedTime = os.microtime() - startTime
+
+    print(('^4[Trase_Lootboxes] ^2[SUCCESS]^0: Config loaded, loaded in %sms!'):format(loadedTime))
+    print('^4[Trase_Lootboxes] ^3[DOCUMENTATION]^0: For installation guides & more visit our documentation https://docs.trase.dev/.')
+    print('^4[Trase_Lootboxes] ^2[SUPPORT]^0: For support contact us on discord https://discord.gg/trase/.')
 end)
