@@ -4,7 +4,7 @@ game 'gta5'
 author 'Trase'
 description 'An advanced and unique lootbox system for your FiveM server.'
 lua54 'yes'
-version '1.0.0'
+version '1.0.2'
 
 ui_page 'web/build/index.html'
 
