@@ -218,7 +218,7 @@ CreateThread(function()
             end
             totalOdds = totalOdds + odd
         end
-        if (totalOdds ~= 1) then
+        if math.abs(totalOdds - 1) > 0.0001 then
             return errorLog('^3Config.RarityOdds^0 do not add up to ^11^0.')
         end
     end
